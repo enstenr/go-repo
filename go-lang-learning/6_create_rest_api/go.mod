@@ -1,4 +1,4 @@
-module hello.go
+module main
 
 go 1.18
 

@@ -1,8 +1,8 @@
 package main
 
-import "github.com/enstenr/calculator"
+import "github.com/enstenr/go-repo"
 
 func main() {
-calculator.calculate(20,30,"SUB")
+	go-repo.calculate(20,30,"SUB");
 
 }

@@ -1,4 +1,4 @@
-package calculate
+package gorepo
 
 func Calculate(num1 , num2 int , action string) int64{
 	returnval:=0

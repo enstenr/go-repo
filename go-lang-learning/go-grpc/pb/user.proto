@@ -1,0 +1,29 @@
+syntax = "proto3";
+
+option go_package="./pb";
+
+package user;
+
+message UserProfile {
+
+int32 id = 1;
+string name = 2;
+string email = 3;
+
+}
+message UserList {
+  repeated UserProfile users = 1;
+}
+message UserRequest {
+
+int32 user_id = 1 ;
+
+}
+message BinaryPayload {
+  bytes data = 1;
+}
+service UserService {
+  rpc GetUser(UserRequest) returns (UserProfile);
+  rpc GetUserStream(UserRequest) returns (stream UserProfile);
+rpc GetUserBinary(UserRequest) returns (stream BinaryPayload);
+}

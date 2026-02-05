@@ -1,0 +1,40 @@
+syntax = "proto3";
+
+package chat.v1;
+
+option go_package = "github.com/enstenr/go-repo/gen/pb/chat/v1;chatv1";
+
+// Shared across services
+message User {
+  string id = 1;
+  string name = 2;
+  string status = 3;
+}
+
+message Message {
+  string id = 1;
+  string sender_id = 2;
+  string recipient_id = 3; // Could be UserID or GroupID
+  string text = 4;
+  int64 timestamp = 5;
+}
+
+// SERVICE 1: User Management
+service UserService {
+  rpc GetUser(GetUserRequest) returns (User);
+}
+
+message GetUserRequest { string user_id = 1; }
+
+// SERVICE 2: Real-time Chat
+service ChatService {
+  // Bi-directional stream: Client sends, Server pushes
+  rpc Connect(stream Message) returns (stream Message);
+}
+
+// SERVICE 3: Group Management
+service GroupService {
+  rpc JoinGroup(JoinRequest) returns (stream Message); // Stream history/new messages
+}
+
+message JoinRequest { string group_id = 1; string user_id = 2; }

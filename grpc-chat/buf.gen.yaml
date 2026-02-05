@@ -1,0 +1,14 @@
+version: v1
+plugins:
+  # Go Plugins
+  - plugin: buf.build/protocolbuffers/go
+    out: gen
+    opt: paths=source_relative
+  - plugin: buf.build/connectrpc/go
+    out: gen
+    opt: paths=source_relative
+  # TypeScript/React Plugins
+  - plugin: buf.build/protocolbuffers/js
+    out: web-client/src/gen
+  - plugin: buf.build/connectrpc/es
+    out: web-client/src/gen

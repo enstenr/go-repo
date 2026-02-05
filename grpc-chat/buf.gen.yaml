@@ -8,7 +8,9 @@ plugins:
     out: gen
     opt: paths=source_relative
   # TypeScript/React Plugins
-  - plugin: buf.build/protocolbuffers/js
+  - plugin: buf.build/bufbuild/es
     out: web-client/src/gen
+    opt: target=js
   - plugin: buf.build/connectrpc/es
     out: web-client/src/gen
+    opt: target=js

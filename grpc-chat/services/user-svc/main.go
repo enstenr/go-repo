@@ -8,6 +8,7 @@ import (
 	"connectrpc.com/connect"
 	chatv1 "github.com/enstenr/go-repo/gen/pb/chat/v1"
 	"github.com/enstenr/go-repo/gen/pb/chat/v1/chatv1connect"
+	"github.com/rs/cors"
 	"golang.org/x/net/http2"
 	"golang.org/x/net/http2/h2c"
 )
@@ -40,16 +41,30 @@ func main() {
 	// This creates the URL path: /chat.v1.UserService/GetUser
 	path, handler := chatv1connect.NewUserServiceHandler(userServer)
 	mux.Handle(path, handler)
-
+	c := cors.New(cors.Options{
+		AllowedOrigins: []string{"http://localhost:3000"},
+		AllowedMethods: []string{"GET", "POST", "OPTIONS"},
+		AllowedHeaders: []string{
+			"Connect-Protocol-Version",
+			"Content-Type",
+			"Connect-Timeout",
+			"X-User-Agent",
+			"X-Connect-Protocol-Version",
+		},
+		ExposedHeaders: []string{
+			"Connect-Error-Message",
+			"Connect-Status-Details",
+		},
+		Debug: true, // Turn this off in production
+	})
 	log.Println("User Service is starting on localhost:50051...")
 
-	// 4. Start the server
-	// h2c.NewHandler enables HTTP/2 without requiring TLS certificates for local dev
-	err := http.ListenAndServe(
-		"localhost:50051",
-		h2c.NewHandler(mux, &http2.Server{}),
-	)
+	/// 3. Wrap the handler
+	// We wrap h2c (which handles HTTP/2) with the CORS middleware
+	handlerWithCors := c.Handler(h2c.NewHandler(mux, &http2.Server{}))
+	log.Println(" Server starting... 50051")
+	err := http.ListenAndServe("localhost:50051", handlerWithCors)
 	if err != nil {
-		log.Fatalf("Server failed to start: %v", err)
+		log.Fatal(err)
 	}
 }

@@ -41,6 +41,10 @@ const (
 	UserServiceGetUserProcedure = "/chat.v1.UserService/GetUser"
 	// ChatServiceConnectProcedure is the fully-qualified name of the ChatService's Connect RPC.
 	ChatServiceConnectProcedure = "/chat.v1.ChatService/Connect"
+	// ChatServiceSubscribeProcedure is the fully-qualified name of the ChatService's Subscribe RPC.
+	ChatServiceSubscribeProcedure = "/chat.v1.ChatService/Subscribe"
+	// ChatServiceSendMessageProcedure is the fully-qualified name of the ChatService's SendMessage RPC.
+	ChatServiceSendMessageProcedure = "/chat.v1.ChatService/SendMessage"
 	// GroupServiceJoinGroupProcedure is the fully-qualified name of the GroupService's JoinGroup RPC.
 	GroupServiceJoinGroupProcedure = "/chat.v1.GroupService/JoinGroup"
 )
@@ -119,6 +123,10 @@ func (UnimplementedUserServiceHandler) GetUser(context.Context, *connect.Request
 type ChatServiceClient interface {
 	// Bi-directional stream: Client sends, Server pushes
 	Connect(context.Context) *connect.BidiStreamForClient[v1.Message, v1.Message]
+	// 1. The browser calls this to listen for new messages (Server-to-Client Stream)
+	Subscribe(context.Context, *connect.Request[v1.SubscribeRequest]) (*connect.ServerStreamForClient[v1.Message], error)
+	// 2. The browser calls this to send a message (Unary - Request/Response)
+	SendMessage(context.Context, *connect.Request[v1.Message]) (*connect.Response[v1.SendMessageResponse], error)
 }
 
 // NewChatServiceClient constructs a client for the chat.v1.ChatService service. By default, it uses
@@ -138,12 +146,26 @@ func NewChatServiceClient(httpClient connect.HTTPClient, baseURL string, opts ..
 			connect.WithSchema(chatServiceMethods.ByName("Connect")),
 			connect.WithClientOptions(opts...),
 		),
+		subscribe: connect.NewClient[v1.SubscribeRequest, v1.Message](
+			httpClient,
+			baseURL+ChatServiceSubscribeProcedure,
+			connect.WithSchema(chatServiceMethods.ByName("Subscribe")),
+			connect.WithClientOptions(opts...),
+		),
+		sendMessage: connect.NewClient[v1.Message, v1.SendMessageResponse](
+			httpClient,
+			baseURL+ChatServiceSendMessageProcedure,
+			connect.WithSchema(chatServiceMethods.ByName("SendMessage")),
+			connect.WithClientOptions(opts...),
+		),
 	}
 }
 
 // chatServiceClient implements ChatServiceClient.
 type chatServiceClient struct {
-	connect *connect.Client[v1.Message, v1.Message]
+	connect     *connect.Client[v1.Message, v1.Message]
+	subscribe   *connect.Client[v1.SubscribeRequest, v1.Message]
+	sendMessage *connect.Client[v1.Message, v1.SendMessageResponse]
 }
 
 // Connect calls chat.v1.ChatService.Connect.
@@ -151,10 +173,24 @@ func (c *chatServiceClient) Connect(ctx context.Context) *connect.BidiStreamForC
 	return c.connect.CallBidiStream(ctx)
 }
 
+// Subscribe calls chat.v1.ChatService.Subscribe.
+func (c *chatServiceClient) Subscribe(ctx context.Context, req *connect.Request[v1.SubscribeRequest]) (*connect.ServerStreamForClient[v1.Message], error) {
+	return c.subscribe.CallServerStream(ctx, req)
+}
+
+// SendMessage calls chat.v1.ChatService.SendMessage.
+func (c *chatServiceClient) SendMessage(ctx context.Context, req *connect.Request[v1.Message]) (*connect.Response[v1.SendMessageResponse], error) {
+	return c.sendMessage.CallUnary(ctx, req)
+}
+
 // ChatServiceHandler is an implementation of the chat.v1.ChatService service.
 type ChatServiceHandler interface {
 	// Bi-directional stream: Client sends, Server pushes
 	Connect(context.Context, *connect.BidiStream[v1.Message, v1.Message]) error
+	// 1. The browser calls this to listen for new messages (Server-to-Client Stream)
+	Subscribe(context.Context, *connect.Request[v1.SubscribeRequest], *connect.ServerStream[v1.Message]) error
+	// 2. The browser calls this to send a message (Unary - Request/Response)
+	SendMessage(context.Context, *connect.Request[v1.Message]) (*connect.Response[v1.SendMessageResponse], error)
 }
 
 // NewChatServiceHandler builds an HTTP handler from the service implementation. It returns the path
@@ -170,10 +206,26 @@ func NewChatServiceHandler(svc ChatServiceHandler, opts ...connect.HandlerOption
 		connect.WithSchema(chatServiceMethods.ByName("Connect")),
 		connect.WithHandlerOptions(opts...),
 	)
+	chatServiceSubscribeHandler := connect.NewServerStreamHandler(
+		ChatServiceSubscribeProcedure,
+		svc.Subscribe,
+		connect.WithSchema(chatServiceMethods.ByName("Subscribe")),
+		connect.WithHandlerOptions(opts...),
+	)
+	chatServiceSendMessageHandler := connect.NewUnaryHandler(
+		ChatServiceSendMessageProcedure,
+		svc.SendMessage,
+		connect.WithSchema(chatServiceMethods.ByName("SendMessage")),
+		connect.WithHandlerOptions(opts...),
+	)
 	return "/chat.v1.ChatService/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		switch r.URL.Path {
 		case ChatServiceConnectProcedure:
 			chatServiceConnectHandler.ServeHTTP(w, r)
+		case ChatServiceSubscribeProcedure:
+			chatServiceSubscribeHandler.ServeHTTP(w, r)
+		case ChatServiceSendMessageProcedure:
+			chatServiceSendMessageHandler.ServeHTTP(w, r)
 		default:
 			http.NotFound(w, r)
 		}
@@ -185,6 +237,14 @@ type UnimplementedChatServiceHandler struct{}
 
 func (UnimplementedChatServiceHandler) Connect(context.Context, *connect.BidiStream[v1.Message, v1.Message]) error {
 	return connect.NewError(connect.CodeUnimplemented, errors.New("chat.v1.ChatService.Connect is not implemented"))
+}
+
+func (UnimplementedChatServiceHandler) Subscribe(context.Context, *connect.Request[v1.SubscribeRequest], *connect.ServerStream[v1.Message]) error {
+	return connect.NewError(connect.CodeUnimplemented, errors.New("chat.v1.ChatService.Subscribe is not implemented"))
+}
+
+func (UnimplementedChatServiceHandler) SendMessage(context.Context, *connect.Request[v1.Message]) (*connect.Response[v1.SendMessageResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("chat.v1.ChatService.SendMessage is not implemented"))
 }
 
 // GroupServiceClient is a client for the chat.v1.GroupService service.

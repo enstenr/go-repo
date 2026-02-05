@@ -19,17 +19,31 @@ message Message {
   int64 timestamp = 5;
 }
 
-// SERVICE 1: User Management
+
 service UserService {
   rpc GetUser(GetUserRequest) returns (User);
 }
+message SubscribeRequest {
+  string user_id = 1;
+}
 
+message SendMessageResponse {
+  string msg_id = 1;
+}
 message GetUserRequest { string user_id = 1; }
 
 // SERVICE 2: Real-time Chat
 service ChatService {
   // Bi-directional stream: Client sends, Server pushes
   rpc Connect(stream Message) returns (stream Message);
+
+
+  // 1. The browser calls this to listen for new messages (Server-to-Client Stream)
+  rpc Subscribe(SubscribeRequest) returns (stream Message);
+
+  // 2. The browser calls this to send a message (Unary - Request/Response)
+  rpc SendMessage(Message) returns (SendMessageResponse);
+
 }
 
 // SERVICE 3: Group Management

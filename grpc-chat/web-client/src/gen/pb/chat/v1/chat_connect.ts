@@ -3,12 +3,10 @@
 /* eslint-disable */
 // @ts-nocheck
 
-import { GetUserRequest, JoinRequest, Message, User } from "./chat_pb.js";
+import { GetUserRequest, JoinRequest, ListUsersRequest, ListUsersResponse, Message, RegisterRequest, RegisterResponse, SendMessageResponse, SubscribeRequest, User } from "./chat_pb.js";
 import { MethodKind } from "@bufbuild/protobuf";
 
 /**
- * SERVICE 1: User Management
- *
  * @generated from service chat.v1.UserService
  */
 export const UserService = {
@@ -21,6 +19,24 @@ export const UserService = {
       name: "GetUser",
       I: GetUserRequest,
       O: User,
+      kind: MethodKind.Unary,
+    },
+    /**
+     * @generated from rpc chat.v1.UserService.Register
+     */
+    register: {
+      name: "Register",
+      I: RegisterRequest,
+      O: RegisterResponse,
+      kind: MethodKind.Unary,
+    },
+    /**
+     * @generated from rpc chat.v1.UserService.ListUsers
+     */
+    listUsers: {
+      name: "ListUsers",
+      I: ListUsersRequest,
+      O: ListUsersResponse,
       kind: MethodKind.Unary,
     },
   }
@@ -44,6 +60,28 @@ export const ChatService = {
       I: Message,
       O: Message,
       kind: MethodKind.BiDiStreaming,
+    },
+    /**
+     * 1. The browser calls this to listen for new messages (Server-to-Client Stream)
+     *
+     * @generated from rpc chat.v1.ChatService.Subscribe
+     */
+    subscribe: {
+      name: "Subscribe",
+      I: SubscribeRequest,
+      O: Message,
+      kind: MethodKind.ServerStreaming,
+    },
+    /**
+     * 2. The browser calls this to send a message (Unary - Request/Response)
+     *
+     * @generated from rpc chat.v1.ChatService.SendMessage
+     */
+    sendMessage: {
+      name: "SendMessage",
+      I: Message,
+      O: SendMessageResponse,
+      kind: MethodKind.Unary,
     },
   }
 } as const;

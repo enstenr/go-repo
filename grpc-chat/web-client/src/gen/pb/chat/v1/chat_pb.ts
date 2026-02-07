@@ -10,7 +10,7 @@ import type { Message as Message$1 } from "@bufbuild/protobuf";
  * Describes the file pb/chat/v1/chat.proto.
  */
 export const file_pb_chat_v1_chat: GenFile = /*@__PURE__*/
-  fileDesc("ChVwYi9jaGF0L3YxL2NoYXQucHJvdG8SB2NoYXQudjEiMAoEVXNlchIKCgJpZBgBIAEoCRIMCgRuYW1lGAIgASgJEg4KBnN0YXR1cxgDIAEoCSJfCgdNZXNzYWdlEgoKAmlkGAEgASgJEhEKCXNlbmRlcl9pZBgCIAEoCRIUCgxyZWNpcGllbnRfaWQYAyABKAkSDAoEdGV4dBgEIAEoCRIRCgl0aW1lc3RhbXAYBSABKAMiIQoOR2V0VXNlclJlcXVlc3QSDwoHdXNlcl9pZBgBIAEoCSIwCgtKb2luUmVxdWVzdBIQCghncm91cF9pZBgBIAEoCRIPCgd1c2VyX2lkGAIgASgJMkAKC1VzZXJTZXJ2aWNlEjEKB0dldFVzZXISFy5jaGF0LnYxLkdldFVzZXJSZXF1ZXN0Gg0uY2hhdC52MS5Vc2VyMkAKC0NoYXRTZXJ2aWNlEjEKB0Nvbm5lY3QSEC5jaGF0LnYxLk1lc3NhZ2UaEC5jaGF0LnYxLk1lc3NhZ2UoATABMkUKDEdyb3VwU2VydmljZRI1CglKb2luR3JvdXASFC5jaGF0LnYxLkpvaW5SZXF1ZXN0GhAuY2hhdC52MS5NZXNzYWdlMAFCMlowZ2l0aHViLmNvbS9lbnN0ZW5yL2dvLXJlcG8vZ2VuL3BiL2NoYXQvdjE7Y2hhdHYxYgZwcm90bzM");
+  fileDesc("ChVwYi9jaGF0L3YxL2NoYXQucHJvdG8SB2NoYXQudjEiMAoEVXNlchIKCgJpZBgBIAEoCRIMCgRuYW1lGAIgASgJEg4KBnN0YXR1cxgDIAEoCSJfCgdNZXNzYWdlEgoKAmlkGAEgASgJEhEKCXNlbmRlcl9pZBgCIAEoCRIUCgxyZWNpcGllbnRfaWQYAyABKAkSDAoEdGV4dBgEIAEoCRIRCgl0aW1lc3RhbXAYBSABKAMiLgoPUmVnaXN0ZXJSZXF1ZXN0EgwKBG5hbWUYASABKAkSDQoFZW1haWwYAiABKAkiLwoQUmVnaXN0ZXJSZXNwb25zZRIbCgR1c2VyGAEgASgLMg0uY2hhdC52MS5Vc2VyIhIKEExpc3RVc2Vyc1JlcXVlc3QiMQoRTGlzdFVzZXJzUmVzcG9uc2USHAoFdXNlcnMYASADKAsyDS5jaGF0LnYxLlVzZXIiIwoQU3Vic2NyaWJlUmVxdWVzdBIPCgd1c2VyX2lkGAEgASgJIiUKE1NlbmRNZXNzYWdlUmVzcG9uc2USDgoGbXNnX2lkGAEgASgJIiEKDkdldFVzZXJSZXF1ZXN0Eg8KB3VzZXJfaWQYASABKAkiMAoLSm9pblJlcXVlc3QSEAoIZ3JvdXBfaWQYASABKAkSDwoHdXNlcl9pZBgCIAEoCTLFAQoLVXNlclNlcnZpY2USMQoHR2V0VXNlchIXLmNoYXQudjEuR2V0VXNlclJlcXVlc3QaDS5jaGF0LnYxLlVzZXISPwoIUmVnaXN0ZXISGC5jaGF0LnYxLlJlZ2lzdGVyUmVxdWVzdBoZLmNoYXQudjEuUmVnaXN0ZXJSZXNwb25zZRJCCglMaXN0VXNlcnMSGS5jaGF0LnYxLkxpc3RVc2Vyc1JlcXVlc3QaGi5jaGF0LnYxLkxpc3RVc2Vyc1Jlc3BvbnNlMrsBCgtDaGF0U2VydmljZRIxCgdDb25uZWN0EhAuY2hhdC52MS5NZXNzYWdlGhAuY2hhdC52MS5NZXNzYWdlKAEwARI6CglTdWJzY3JpYmUSGS5jaGF0LnYxLlN1YnNjcmliZVJlcXVlc3QaEC5jaGF0LnYxLk1lc3NhZ2UwARI9CgtTZW5kTWVzc2FnZRIQLmNoYXQudjEuTWVzc2FnZRocLmNoYXQudjEuU2VuZE1lc3NhZ2VSZXNwb25zZTJFCgxHcm91cFNlcnZpY2USNQoJSm9pbkdyb3VwEhQuY2hhdC52MS5Kb2luUmVxdWVzdBoQLmNoYXQudjEuTWVzc2FnZTABQjJaMGdpdGh1Yi5jb20vZW5zdGVuci9nby1yZXBvL2dlbi9wYi9jaGF0L3YxO2NoYXR2MWIGcHJvdG8z");
 
 /**
  * Shared across services
@@ -81,6 +81,111 @@ export const MessageSchema: GenMessage<Message> = /*@__PURE__*/
   messageDesc(file_pb_chat_v1_chat, 1);
 
 /**
+ * @generated from message chat.v1.RegisterRequest
+ */
+export type RegisterRequest = Message$1<"chat.v1.RegisterRequest"> & {
+  /**
+   * @generated from field: string name = 1;
+   */
+  name: string;
+
+  /**
+   * @generated from field: string email = 2;
+   */
+  email: string;
+};
+
+/**
+ * Describes the message chat.v1.RegisterRequest.
+ * Use `create(RegisterRequestSchema)` to create a new message.
+ */
+export const RegisterRequestSchema: GenMessage<RegisterRequest> = /*@__PURE__*/
+  messageDesc(file_pb_chat_v1_chat, 2);
+
+/**
+ * @generated from message chat.v1.RegisterResponse
+ */
+export type RegisterResponse = Message$1<"chat.v1.RegisterResponse"> & {
+  /**
+   * @generated from field: chat.v1.User user = 1;
+   */
+  user?: User;
+};
+
+/**
+ * Describes the message chat.v1.RegisterResponse.
+ * Use `create(RegisterResponseSchema)` to create a new message.
+ */
+export const RegisterResponseSchema: GenMessage<RegisterResponse> = /*@__PURE__*/
+  messageDesc(file_pb_chat_v1_chat, 3);
+
+/**
+ * Usually empty for a basic "get all",
+ *
+ * @generated from message chat.v1.ListUsersRequest
+ */
+export type ListUsersRequest = Message$1<"chat.v1.ListUsersRequest"> & {
+};
+
+/**
+ * Describes the message chat.v1.ListUsersRequest.
+ * Use `create(ListUsersRequestSchema)` to create a new message.
+ */
+export const ListUsersRequestSchema: GenMessage<ListUsersRequest> = /*@__PURE__*/
+  messageDesc(file_pb_chat_v1_chat, 4);
+
+/**
+ * @generated from message chat.v1.ListUsersResponse
+ */
+export type ListUsersResponse = Message$1<"chat.v1.ListUsersResponse"> & {
+  /**
+   * @generated from field: repeated chat.v1.User users = 1;
+   */
+  users: User[];
+};
+
+/**
+ * Describes the message chat.v1.ListUsersResponse.
+ * Use `create(ListUsersResponseSchema)` to create a new message.
+ */
+export const ListUsersResponseSchema: GenMessage<ListUsersResponse> = /*@__PURE__*/
+  messageDesc(file_pb_chat_v1_chat, 5);
+
+/**
+ * @generated from message chat.v1.SubscribeRequest
+ */
+export type SubscribeRequest = Message$1<"chat.v1.SubscribeRequest"> & {
+  /**
+   * @generated from field: string user_id = 1;
+   */
+  userId: string;
+};
+
+/**
+ * Describes the message chat.v1.SubscribeRequest.
+ * Use `create(SubscribeRequestSchema)` to create a new message.
+ */
+export const SubscribeRequestSchema: GenMessage<SubscribeRequest> = /*@__PURE__*/
+  messageDesc(file_pb_chat_v1_chat, 6);
+
+/**
+ * @generated from message chat.v1.SendMessageResponse
+ */
+export type SendMessageResponse = Message$1<"chat.v1.SendMessageResponse"> & {
+  /**
+   * @generated from field: string msg_id = 1;
+   */
+  msgId: string;
+};
+
+/**
+ * Describes the message chat.v1.SendMessageResponse.
+ * Use `create(SendMessageResponseSchema)` to create a new message.
+ */
+export const SendMessageResponseSchema: GenMessage<SendMessageResponse> = /*@__PURE__*/
+  messageDesc(file_pb_chat_v1_chat, 7);
+
+/**
  * @generated from message chat.v1.GetUserRequest
  */
 export type GetUserRequest = Message$1<"chat.v1.GetUserRequest"> & {
@@ -95,7 +200,7 @@ export type GetUserRequest = Message$1<"chat.v1.GetUserRequest"> & {
  * Use `create(GetUserRequestSchema)` to create a new message.
  */
 export const GetUserRequestSchema: GenMessage<GetUserRequest> = /*@__PURE__*/
-  messageDesc(file_pb_chat_v1_chat, 2);
+  messageDesc(file_pb_chat_v1_chat, 8);
 
 /**
  * @generated from message chat.v1.JoinRequest
@@ -117,11 +222,9 @@ export type JoinRequest = Message$1<"chat.v1.JoinRequest"> & {
  * Use `create(JoinRequestSchema)` to create a new message.
  */
 export const JoinRequestSchema: GenMessage<JoinRequest> = /*@__PURE__*/
-  messageDesc(file_pb_chat_v1_chat, 3);
+  messageDesc(file_pb_chat_v1_chat, 9);
 
 /**
- * SERVICE 1: User Management
- *
  * @generated from service chat.v1.UserService
  */
 export const UserService: GenService<{
@@ -132,6 +235,22 @@ export const UserService: GenService<{
     methodKind: "unary";
     input: typeof GetUserRequestSchema;
     output: typeof UserSchema;
+  },
+  /**
+   * @generated from rpc chat.v1.UserService.Register
+   */
+  register: {
+    methodKind: "unary";
+    input: typeof RegisterRequestSchema;
+    output: typeof RegisterResponseSchema;
+  },
+  /**
+   * @generated from rpc chat.v1.UserService.ListUsers
+   */
+  listUsers: {
+    methodKind: "unary";
+    input: typeof ListUsersRequestSchema;
+    output: typeof ListUsersResponseSchema;
   },
 }> = /*@__PURE__*/
   serviceDesc(file_pb_chat_v1_chat, 0);
@@ -151,6 +270,26 @@ export const ChatService: GenService<{
     methodKind: "bidi_streaming";
     input: typeof MessageSchema;
     output: typeof MessageSchema;
+  },
+  /**
+   * 1. The browser calls this to listen for new messages (Server-to-Client Stream)
+   *
+   * @generated from rpc chat.v1.ChatService.Subscribe
+   */
+  subscribe: {
+    methodKind: "server_streaming";
+    input: typeof SubscribeRequestSchema;
+    output: typeof MessageSchema;
+  },
+  /**
+   * 2. The browser calls this to send a message (Unary - Request/Response)
+   *
+   * @generated from rpc chat.v1.ChatService.SendMessage
+   */
+  sendMessage: {
+    methodKind: "unary";
+    input: typeof MessageSchema;
+    output: typeof SendMessageResponseSchema;
   },
 }> = /*@__PURE__*/
   serviceDesc(file_pb_chat_v1_chat, 1);

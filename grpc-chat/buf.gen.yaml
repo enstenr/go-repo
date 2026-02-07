@@ -10,7 +10,7 @@ plugins:
   # TypeScript/React Plugins
   - plugin: buf.build/bufbuild/es
     out: web-client/src/gen
-    opt: target=js
+    opt: target=ts
   - plugin: buf.build/connectrpc/es
     out: web-client/src/gen
-    opt: target=js
+    opt: target=ts

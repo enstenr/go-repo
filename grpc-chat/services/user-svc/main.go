@@ -13,8 +13,15 @@ import (
 	"golang.org/x/net/http2/h2c"
 )
 
-type UserServer struct{}
+type UserServer struct {
+	users map[string]*chatv1.User
+}
 
+func NewUserServer() *UserServer {
+	return &UserServer{
+		users: make(map[string]*chatv1.User),
+	}
+}
 func (s *UserServer) GetUser(
 	ctx context.Context,
 	req *connect.Request[chatv1.GetUserRequest],
@@ -22,19 +29,56 @@ func (s *UserServer) GetUser(
 
 	log.Printf("Incoming request for User ID: %s", req.Msg.UserId)
 
-	// In a real app, you would fetch from a database here.
-	// We'll return a hardcoded user for the showcase.
-	user := &chatv1.User{
-		Id:     req.Msg.UserId,
-		Name:   "Architect Rajesh",
-		Status: "Available",
+	user, ok := s.users[req.Msg.UserId]
+	if !ok {
+		return nil, connect.NewError(connect.CodeNotFound, nil)
 	}
-
-	// Wrap the protobuf message in a Connect response
 	return connect.NewResponse(user), nil
 }
+func (s *UserServer) Register(
+	ctx context.Context,
+	req *connect.Request[chatv1.RegisterRequest],
+) (*connect.Response[chatv1.RegisterResponse], error) {
+
+	// Generate a simple ID (in production, use a UUID)
+	newID := "user_" + req.Msg.Name
+
+	newUser := &chatv1.User{
+		Id:     newID,
+		Name:   req.Msg.Name,
+		Status: "Just Joined",
+	}
+
+	// Save to our "database"
+	s.users[newID] = newUser
+
+	log.Printf("New user registered: %s with ID: %s", newUser.Name, newUser.Id)
+
+	return connect.NewResponse(&chatv1.RegisterResponse{
+		User: newUser,
+	}), nil
+}
+func (s *UserServer) ListUsers(
+	ctx context.Context,
+	req *connect.Request[chatv1.ListUsersRequest],
+) (*connect.Response[chatv1.ListUsersResponse], error) {
+
+	log.Println("Fetching all users...")
+
+	// Convert our map values into a slice
+	allUsers := make([]*chatv1.User, 0, len(s.users))
+	for _, user := range s.users {
+		allUsers = append(allUsers, user)
+	}
+
+	return connect.NewResponse(&chatv1.ListUsersResponse{
+		Users: allUsers,
+	}), nil
+}
+
 func main() {
-	userServer := &UserServer{}
+
+	userServer := NewUserServer()
 	mux := http.NewServeMux()
 
 	// 3. Register the service handler on the mux

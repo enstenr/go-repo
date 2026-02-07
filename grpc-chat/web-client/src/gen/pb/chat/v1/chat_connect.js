@@ -3,7 +3,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-import { GetUserRequest, JoinRequest, Message, SendMessageResponse, SubscribeRequest, User } from "./chat_pb.js";
+import { GetUserRequest, JoinRequest, ListUsersRequest, ListUsersResponse, Message, RegisterRequest, RegisterResponse, SendMessageResponse, SubscribeRequest, User } from "./chat_pb.js";
 import { MethodKind } from "@bufbuild/protobuf";
 
 /**
@@ -19,6 +19,24 @@ export const UserService = {
       name: "GetUser",
       I: GetUserRequest,
       O: User,
+      kind: MethodKind.Unary,
+    },
+    /**
+     * @generated from rpc chat.v1.UserService.Register
+     */
+    register: {
+      name: "Register",
+      I: RegisterRequest,
+      O: RegisterResponse,
+      kind: MethodKind.Unary,
+    },
+    /**
+     * @generated from rpc chat.v1.UserService.ListUsers
+     */
+    listUsers: {
+      name: "ListUsers",
+      I: ListUsersRequest,
+      O: ListUsersResponse,
       kind: MethodKind.Unary,
     },
   }

@@ -89,16 +89,14 @@ func (s *ChatServer) SendMessage(
 	log.Printf("Incoming message from %s to %s: %s", msg.SenderId, msg.RecipientId, msg.Text)
 
 	s.mu.RLock()
+	defer s.mu.RUnlock()
 	// If no recipient specified, echo back to sender for testing
-	target := msg.RecipientId
-	if target == "" {
-		target = msg.SenderId
+	if recipientChan, ok := s.clients[msg.RecipientId]; ok {
+		recipientChan <- msg
 	}
-
-	if ch, ok := s.clients[target]; ok {
-		ch <- msg
+	if senderChan, ok := s.clients[msg.SenderId]; ok && msg.SenderId != msg.RecipientId {
+		senderChan <- msg
 	}
-	s.mu.RUnlock()
 
 	return connect.NewResponse(&chatv1.SendMessageResponse{MsgId: "delivered"}), nil
 }

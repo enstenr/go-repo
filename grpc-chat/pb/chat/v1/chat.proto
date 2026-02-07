@@ -19,9 +19,25 @@ message Message {
   int64 timestamp = 5;
 }
 
+message RegisterRequest {
+  string name   = 1;
+  string email  = 2;
+}
 
+message RegisterResponse {
+  User user = 1;
+}
+message ListUsersRequest {
+  // Usually empty for a basic "get all",
+}
+
+message ListUsersResponse {
+  repeated User users = 1;
+}
 service UserService {
   rpc GetUser(GetUserRequest) returns (User);
+  rpc Register(RegisterRequest) returns (RegisterResponse);
+  rpc ListUsers(ListUsersRequest) returns (ListUsersResponse);
 }
 message SubscribeRequest {
   string user_id = 1;

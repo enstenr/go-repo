@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"errors"
 	"io"
 	"log"
 	"net/http"
@@ -16,6 +17,8 @@ import (
 )
 
 type ChatServer struct {
+	userClient chatv1connect.UserServiceClient
+
 	// A map to keep track of active streams (Key: UserID)
 	// In a real app, this would be Redis, but for a showcase, a Map works!
 	mu          sync.RWMutex
@@ -87,12 +90,21 @@ func (s *ChatServer) SendMessage(
 ) (*connect.Response[chatv1.SendMessageResponse], error) {
 	msg := req.Msg
 	log.Printf("Incoming message from %s to %s: %s", msg.SenderId, msg.RecipientId, msg.Text)
-
+	_, err := s.userClient.GetUser(ctx, connect.NewRequest(&chatv1.GetUserRequest{
+		UserId: msg.RecipientId,
+	}))
+	if err != nil {
+		log.Println(err)
+		return nil, connect.NewError(connect.CodeNotFound, err)
+	}
 	s.mu.RLock()
 	defer s.mu.RUnlock()
 	// If no recipient specified, echo back to sender for testing
 	if recipientChan, ok := s.clients[msg.RecipientId]; ok {
 		recipientChan <- msg
+	} else {
+		// Return an actual error to React
+		return nil, connect.NewError(connect.CodeNotFound, errors.New("User is offline"))
 	}
 	if senderChan, ok := s.clients[msg.SenderId]; ok && msg.SenderId != msg.RecipientId {
 		senderChan <- msg
@@ -102,7 +114,14 @@ func (s *ChatServer) SendMessage(
 }
 
 func main() {
+
+	userSvcClient := chatv1connect.NewUserServiceClient(
+		http.DefaultClient,
+		"http://localhost:50051",
+	)
+
 	chatServer := &ChatServer{
+		userClient:  userSvcClient,
 		clients:     make(map[string]chan *chatv1.Message),
 		bidiClients: make(map[string]*connect.BidiStream[chatv1.Message, chatv1.Message]),
 	}

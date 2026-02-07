@@ -1,11 +1,13 @@
 import React, { useState, useEffect, useCallback, FormEvent } from "react";
-import { createClient } from "@connectrpc/connect";
+import {ConnectError, createClient} from "@connectrpc/connect";
 import { createConnectTransport } from "@connectrpc/connect-web";
 
 // Import your generated schemas and types
 // Note: Ensure your generated files are in the paths below
 import { UserService, ChatService } from "./gen/pb/chat/v1/chat_pb";
 import { User, Message } from "./gen/pb/chat/v1/chat_pb";
+import toast, {Toaster} from "react-hot-toast";
+
 
 // 1. Transports
 const userTransport = createConnectTransport({
@@ -101,6 +103,13 @@ const App: React.FC = () => {
             setInputText("");
         } catch (err) {
             console.error("Send failed:", err);
+            if (err instanceof ConnectError) {
+                // This pulls the "User is offline" message you wrote in Go
+                toast.error(err.rawMessage);
+            } else {
+                toast.error("An unexpected error occurred.");
+                console.error("Send failed:", err);
+            }
         }
     };
 
@@ -125,6 +134,7 @@ const App: React.FC = () => {
 
     return (
         <div style={styles.appContainer}>
+            <Toaster position="top-center" reverseOrder={false} />
             <div style={styles.sidebar}>
                 <h3 style={{ borderBottom: "1px solid #ddd", paddingBottom: "10px" }}>Users</h3>
                 <button onClick={fetchUsers} style={styles.refreshBtn}>Refresh List</button>

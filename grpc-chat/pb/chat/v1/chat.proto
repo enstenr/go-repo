@@ -1,0 +1,70 @@
+syntax = "proto3";
+
+package chat.v1;
+
+option go_package = "github.com/enstenr/go-repo/gen/pb/chat/v1;chatv1";
+
+// Shared across services
+message User {
+  string id = 1;
+  string name = 2;
+  string status = 3;
+}
+
+message Message {
+  string id = 1;
+  string sender_id = 2;
+  string recipient_id = 3; // Could be UserID or GroupID
+  string text = 4;
+  int64 timestamp = 5;
+}
+
+message RegisterRequest {
+  string name   = 1;
+  string email  = 2;
+}
+
+message RegisterResponse {
+  User user = 1;
+}
+message ListUsersRequest {
+  // Usually empty for a basic "get all",
+}
+
+message ListUsersResponse {
+  repeated User users = 1;
+}
+service UserService {
+  rpc GetUser(GetUserRequest) returns (User);
+  rpc Register(RegisterRequest) returns (RegisterResponse);
+  rpc ListUsers(ListUsersRequest) returns (ListUsersResponse);
+}
+message SubscribeRequest {
+  string user_id = 1;
+}
+
+message SendMessageResponse {
+  string msg_id = 1;
+}
+message GetUserRequest { string user_id = 1; }
+
+// SERVICE 2: Real-time Chat
+service ChatService {
+  // Bi-directional stream: Client sends, Server pushes
+  rpc Connect(stream Message) returns (stream Message);
+
+
+  // 1. The browser calls this to listen for new messages (Server-to-Client Stream)
+  rpc Subscribe(SubscribeRequest) returns (stream Message);
+
+  // 2. The browser calls this to send a message (Unary - Request/Response)
+  rpc SendMessage(Message) returns (SendMessageResponse);
+
+}
+
+// SERVICE 3: Group Management
+service GroupService {
+  rpc JoinGroup(JoinRequest) returns (stream Message); // Stream history/new messages
+}
+
+message JoinRequest { string group_id = 1; string user_id = 2; }

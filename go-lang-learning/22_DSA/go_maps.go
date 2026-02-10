@@ -22,8 +22,9 @@ func main() {
 	m := make(map[string]int)
 	m["Rajesh"] = 40
 	fmt.Println(m["Rajesh"])
-	fmt.Println(unsafe.Sizeof(m))
+	fmt.Println("Size of map ", unsafe.Sizeof(m))
 
+	fmt.Printf("Address of Map %p \n", &m)
 	header := *(**hmap)(unsafe.Pointer(&m))
 	fmt.Println(header)
 
@@ -41,8 +42,13 @@ func main() {
 
 	// Verify the value in the bucket
 	// Offset = BucketStart + TopHash(8) + AllKeys(16*8)
-	val0Addr := uintptr(bucketPtr) + 8 + (16 * 8)
-	val0 := (*int)(unsafe.Pointer(val0Addr))
-	fmt.Printf("5. Value at Slot 0:    %d\n", *val0)
+
+	// Scan all 8 possible slots in the bucket
+	fmt.Println("--- Raw Bucket Dump (First 128 bytes) ---")
+	for i := 0; i < 16; i++ { // Look at 16 chunks of 8-bytes
+		ptr := uintptr(bucketPtr) + uintptr(i*8)
+		val := (*uintptr)(unsafe.Pointer(ptr))
+		fmt.Printf("Offset %d: 0x%x\n", i*8, *val)
+	}
 
 }

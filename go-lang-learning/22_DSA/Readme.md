@@ -1,0 +1,1 @@
+go test -bench=. -benchmem algo_dynami_program.go fibo_test.go 
